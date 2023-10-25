@@ -13,8 +13,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
+import javafx.util.StringConverter;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class HelloController implements Initializable {
@@ -47,6 +54,16 @@ public class HelloController implements Initializable {
     private MenuItem menuSalir;
     @FXML
     private MenuItem menuAcercaDe;
+    @FXML
+    private ComboBox comboRecetas;
+    @FXML
+    private ToggleGroup dificultad;
+    @FXML
+    private ToggleButton toguelDificultad;
+    @FXML
+    private ImageView carita;
+
+    private MediaPlayer mediaPlayer;
 
     @FXML
     protected void onHelloButtonClick() {
@@ -57,11 +74,15 @@ public class HelloController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        Media sonido = new Media(HelloApplication.class.getClassLoader().getResource("com/example/recetacocina/audio/audio.wav").toExternalForm());
+        MediaPlayer mediaplayer = new MediaPlayer(sonido);
 //        comboDificultad.getItems().add("Fácil");
 //        comboDificultad.getItems().add("Medio");
 //        comboDificultad.getItems().add("Dificil");
 //        comboDificultad.getItems().addAll("básica","hard","pro");
 
+        //nunca se instancia el observable list
         ObservableList<String> datos = FXCollections.observableArrayList();
 
         datos.addAll("Fácil","Dificil","Moderada");
@@ -125,7 +146,37 @@ public class HelloController implements Initializable {
         listRecetas.getItems().add(new Receta("Sopa de pollo casera", "Cena", 40, "Difícil"));
         listRecetas.getItems().add(new Receta("Pancakes con sirope de arce", "Desayuno", 25, "Moderada"));
 
+        comboDificultad.valueProperty().addListener(
+                (observableValue, s, t1) -> {
+                    String imagen = "neutral.png";
+                    //t1 es el valor actual   s valor antiguo
+                    if(t1 == "Fácil") imagen = "feliz.png";
+                    else if (t1 == "Dificil") imagen = "muerto.png";
 
+                    carita.setImage(new Image("com/example/recetacocina/img/"+imagen));
+                    mediaplayer.seek(new Duration(0));
+                    mediaplayer.play();
+
+        });
+        comboRecetas.setConverter(new StringConverter<Receta>() {
+            @Override
+            public String toString(Receta receta) {
+                if(receta!=null) {
+                    return receta.getNombre();
+                }
+                else{
+                    return null;
+                }
+            }
+
+            @Override
+            public Receta fromString(String s) {
+                return null;
+            }
+        });
+
+        comboRecetas.getItems().addAll( listRecetas.getItems());
+//        System.out.println(toguelDificultad.getUserData());
     }
 
 //    @FXML
@@ -146,11 +197,9 @@ public class HelloController implements Initializable {
     }
 
 
-    @FXML
-    public void insertarReceta(Event event) {
-    }
 
-    @FXML
+
+    @Deprecated
     public void salir(ActionEvent actionEvent) {
         System.exit(0);
     }
@@ -161,5 +210,16 @@ public class HelloController implements Initializable {
         alert.setHeaderText("El creador");
         alert.setContentText("Creado por Joaquin Romero");
         alert.showAndWait();
+    }
+
+    @FXML
+    public void mostrarRecetas(ActionEvent actionEvent) {
+        System.out.println( comboRecetas.getSelectionModel().getSelectedItem() );
+//        listRecetas.getSelectionModel().select(comboRecetas.getSelectionModel().getSelectedItem());
+
+        Session.setRecetaActual((Receta) comboRecetas.getSelectionModel().getSelectedItem());
+        HelloApplication.loadFXML("VentanaSecundaria.fxml");
+
+
     }
 }

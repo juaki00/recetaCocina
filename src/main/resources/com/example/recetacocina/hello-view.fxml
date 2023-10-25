@@ -8,12 +8,15 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -22,16 +25,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.recetacocina.HelloController">
    <center>
-      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="ventana" stylesheets="@style.css">
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="952.0" styleClass="ventana" stylesheets="@style.css">
          <top>
             <VBox alignment="CENTER" prefHeight="246.0" prefWidth="948.0" BorderPane.alignment="CENTER">
                <children>
                   <ImageView fitHeight="150.0" fitWidth="344.0" pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8">
                      <image>
-                        <Image url="@../../../img/cocinero.png" />
+                        <Image url="@../../../img2/cocinero.png" />
                      </image>
                   </ImageView>
                   <Label id="titulo" stylesheets="@style.css" text="Recetario de cocina" textOverrun="CENTER_WORD_ELLIPSIS">
@@ -39,18 +41,19 @@
                         <Font name="System Bold" size="36.0" />
                      </font>
                   </Label>
+                  <ComboBox fx:id="comboRecetas" onAction="#mostrarRecetas" prefWidth="150.0" />
                </children>
                <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </VBox>
          </top>
          <center>
-            <SplitPane dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" stylesheets="@style.css" BorderPane.alignment="CENTER">
+            <SplitPane dividerPositions="0.29797979797979796" maxHeight="-Infinity" prefHeight="500.0" prefWidth="200.0" stylesheets="@style.css" BorderPane.alignment="CENTER">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="250.0" prefHeight="160.0" prefWidth="100.0" styleClass="transparente" stylesheets="@style.css">
+                <AnchorPane minHeight="0.0" minWidth="250.0" prefHeight="550.0" prefWidth="275.0" styleClass="transparente" stylesheets="@style.css">
                      <children>
-                        <VBox alignment="CENTER_LEFT" prefHeight="335.0" prefWidth="232.0" spacing="10.0" stylesheets="@style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox alignment="CENTER_LEFT" layoutY="-67.0" prefHeight="479.0" prefWidth="275.0" spacing="10.0" stylesheets="@style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-67.0">
                            <children>
                               <Label prefHeight="30.0" prefWidth="154.0" text="Nueva Receta">
                                  <font>
@@ -58,7 +61,14 @@
                                  </font>
                               </Label>
                               <Label text="Nombre receta" />
-                              <TextField fx:id="txtNombre" promptText="Introduce un nombre descriptivo" />
+                              <RadioButton mnemonicParsing="false" selected="true" text="Facil">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="dificultad" />
+                                 </toggleGroup>
+                              </RadioButton>
+                              <RadioButton mnemonicParsing="false" text="Medio" toggleGroup="$dificultad" />
+                              <RadioButton mnemonicParsing="false" text="Dificil" toggleGroup="$dificultad" />
+                              <TextField fx:id="txtNombre" prefHeight="114.0" prefWidth="254.0" promptText="Introduce un nombre descriptivo" />
                               <FlowPane prefHeight="18.0" prefWidth="218.0">
                                  <children>
                                     <Label text="Duracion" />
@@ -74,10 +84,34 @@
                               </FlowPane>
                               <Slider fx:id="sliderDuracion" majorTickUnit="30.0" max="180.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
                               <Label text="Dificultad" />
-                              <ComboBox fx:id="comboDificultad" prefWidth="150.0" promptText="Dificultad" />
+                              <FlowPane>
+                                 <children>
+                                    <ComboBox fx:id="comboDificultad" prefWidth="150.0" promptText="Dificultad">
+                                       <FlowPane.margin>
+                                          <Insets />
+                                       </FlowPane.margin>
+                                    </ComboBox>
+                                    <ImageView fx:id="carita" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@img/feliz.png" />
+                                       </image>
+                                       <FlowPane.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </FlowPane.margin>
+                                    </ImageView>
+                                 </children>
+                              </FlowPane>
                               <Label text="Tipo de receta" />
                               <ListView fx:id="listTipo" minHeight="-Infinity" prefHeight="132.0" prefWidth="150.0" />
-                              <Button fx:id="btnAniadir" mnemonicParsing="false" onAction="#insertarReceta" onDragOver="#insertarReceta" text="Añadir a tabla" />
+                              <Button fx:id="btnAniadir" mnemonicParsing="false" onAction="#insertarReceta" onDragOver="#insertarReceta" text="Añadir a tabla">
+                                 <graphic>
+                                    <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@img/muerto.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
+                              <ToggleButton fx:id="toguelDificultad" layoutX="20.0" layoutY="124.0" mnemonicParsing="false" text="ToggleButton" />
                            </children>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -85,7 +119,7 @@
                         </VBox>
                      </children>
                   </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="515.0" prefWidth="642.0">
                      <children>
                         <TableView id="tabla" fx:id="listRecetas" layoutX="170.0" layoutY="68.0" prefHeight="200.0" prefWidth="200.0" stylesheets="@style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
@@ -119,7 +153,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="Archivo">
             <items>
-              <MenuItem fx:id="menuSalir" mnemonicParsing="false" onAction="#salir" text="Salir" />
+              <MenuItem fx:id="menuSalir" mnemonicParsing="false" text="Salir" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="menuAcercaDe" mnemonicParsing="false" onAction="#acercaDe" text="Acerca de" />
             </items>
